@@ -1,43 +1,29 @@
-function Book(title, author, pages, hasRead){
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.hasRead = hasRead;
-}
-function saveLibrary() {
-    localStorage.setItem('library', JSON.stringify(library));
-}
-function loadLibrary() {
-    const stored = localStorage.getItem('library');
-    if (stored) {
-        const parsed = JSON.parse(stored);
-        library = parsed.map(book => new Book(book.title, book.author, book.pages, book.hasRead));
-    }else {
-        library = [];
+document.addEventListener("DOMContentLoaded", function() {
+    const library = JSON.parse(localStorage.getItem('library')) || [];
+    const tbody = document.querySelector('#bookTable tbody');
+
+    function renderTable(){
+        tbody.innerHTML = '';
+        library.forEach((book, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.pages}</td>
+                <td><input type ="checkbox"</td>
+                <td><button data-index="${index}">Remove</button></td>
+            `;
+            tbody.appendChild(row);
+        });    
     }
-}
-function displayBooks(){
-    const tbody = document.querySelector("#bookTable tbody");
-    tbody.innerHTML = "";
-    library.forEach((book, index) => {
-        const row = document.createElement("tr");
-        index = crypto.randomUUID;
-        row.innerHTML = `
-            <td>${index}</td>
-            <td>${book.title}</td>
-            <td>${book.author}</td>
-            <td>${book.pages}</td>
-            <td>${book.hasRead ? "Yes" : "No"}</td>
-            <td><button class = "remove-btn" onclick="removeBook(${index})">Remove</button></td>
-        `;
-        tbody.appendChild(row);
+    tbody.addEventListener('click', function(e){
+        if(e.target.tagName === 'BUTTON'){
+            const idx = e.target.getAttribute('data-index');
+            library.splice(idx, 1);
+            localStorage.setItem('library', JSON.stringify(library));
+            renderTable();
+        }
     });
-}
-function removeBook(index) {
-    library.splice(index, 1);
-    saveLibrary();
-    displayBooks();
-}
-let library = [];
-loadLibrary();
-displayBooks();
+    renderTable();
+});
