@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>${book.title}</td>
                 <td>${book.author}</td>
                 <td>${book.pages}</td>
-                <td><input type ="checkbox"</td>
+                <td><input type ="checkbox" ${book.read ? 'checked ' : ''}disabled</td>
                 <td><button data-index="${index}">Remove</button></td>
             `;
             tbody.appendChild(row);
